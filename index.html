@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIVE CHALLENGE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090910;color:white;font-family:Arial,sans-serif;padding:20px}
+h1{color:#b66aff;text-align:center;letter-spacing:2px}
+.sub{text-align:center;color:#aaa;font-size:12px}
+.card{background:#171725;border:1px solid #39304e;border-radius:15px;padding:16px;margin:14px 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{text-align:center;background:#242438;padding:14px 5px;border-radius:12px}
+.stat b{display:block;font-size:24px;margin:8px 0}
+.pink{color:#ff6b9d}.purple{color:#bd83ff}.blue{color:#6bdcff}
+button{border:0;border-radius:9px;padding:12px;background:#823be9;color:white;font-weight:bold;margin:4px;cursor:pointer}
+input{width:100%;padding:12px;border-radius:9px;border:1px solid #51406b;background:#10101b;color:white;margin:7px 0}
+button.secondary{background:#303044}
+#active{color:#c58aff;font-weight:bold;font-size:18px}
+small{color:#aaa}
+</style>
+</head>
+<body>
+<h1>⚡ LIVE CHALLENGE</h1>
+<p class="sub">YOUR LIVE, YOUR CHALLENGE</p>
+
+<div class="card">
+<h3>🔴 LIVE DASHBOARD</h3>
+<div class="stats">
+<div class="stat">❤️<b class="pink" id="likes">0</b><small>Likes</small></div>
+<div class="stat">🎁<b class="purple" id="gifts">0</b><small>Gifts</small></div>
+<div class="stat">👥<b class="blue" id="follows">0</b><small>Follows</small></div>
+</div>
+</div>
+
+<div class="card">
+<h3>🎮 SIMULASI EVENT</h3>
+<button onclick="eventRun('like')">❤️ Like +1</button>
+<button onclick="eventRun('gift')">🎁 Gift</button>
+<button onclick="eventRun('follow')">👥 Follow</button>
+</div>
+
+<div class="card">
+<h3>⚡ TANTANGAN AKTIF</h3>
+<p id="active">Belum ada tantangan</p>
+<small id="who">Menunggu aktivitas penonton...</small>
+</div>
+
+<div class="card">
+<h3>🛠️ BUAT TANTANGAN SENDIRI</h3>
+<input id="challenge" placeholder="Tulis tantanganmu...">
+<select id="type" style="width:100%;padding:12px;background:#10101b;color:white;border-radius:9px">
+<option value="like">Like</option>
+<option value="gift">Gift</option>
+<option value="follow">Follow</option>
+</select>
+<button onclick="addChallenge()">+ Tambah Tantangan</button>
+<div id="rules"></div>
+</div>
+
+<div class="card">
+<h3>📜 RIWAYAT AKTIVITAS</h3>
+<div id="history"><small>Belum ada aktivitas.</small></div>
+<button class="secondary" onclick="resetAll()">Reset Statistik</button>
+</div>
+
+<script>
+let stats={like:0,gift:0,follow:0};
+let rules=[];
+function eventRun(type){
+stats[type]++;
+document.getElementById(type==='like'?'likes':type==='gift'?'gifts':'follows').textContent=stats[type];
+let rule=rules.find(r=>r.type===type);
+let eventName={like:'Like',gift:'Gift',follow:'Follow'}[type];
+let challenge=rule?rule.name:
+({like:'Lakukan pose lucu!',gift:'Pilih lagu untuk dinyanyikan!',follow:'Ucapkan terima kasih kepada follower!'}[type]);
+document.getElementById('active').textContent=challenge;
+document.getElementById('who').textContent='Event terdeteksi: '+eventName;
+let h=document.getElementById('history');
+if(h.querySelector('small'))h.innerHTML='';
+h.innerHTML='<p>⚡ '+eventName+': '+challenge+'</p>'+h.innerHTML;
+}
+function addChallenge(){
+let name=document.getElementById('challenge').value.trim();
+let type=document.getElementById('type').value;
+if(!name){alert('Isi tantangan dulu!');return}
+rules.push({name,type});
+document.getElementById('challenge').value='';
+renderRules();
+}
+function renderRules(){
+document.getElementById('rules').innerHTML=rules.map((r,i)=>
+'<p>⚡ '+r.type.toUpperCase()+': '+r.name+
+' <button class="secondary" onclick="removeRule('+i+')">Hapus</button></p>'
+).join('');
+}
+function removeRule(i){rules.splice(i,1);renderRules()}
+function resetAll(){
+stats={like:0,gift:0,follow:0};
+['likes','gifts','follows'].forEach((id)=>document.getElementById(id).textContent=0);
+document.getElementById('active').textContent='Belum ada tantangan';
+document.getElementById('who').textContent='Menunggu aktivitas penonton...';
+document.getElementById('history').innerHTML='<small>Belum ada aktivitas.</small>';
+}
+</script>
+</body>
+</html>
